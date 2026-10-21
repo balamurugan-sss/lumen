@@ -13,6 +13,7 @@
 #   看不出来的一种：流式 WAV 恰好截断在采样边界上（头里没有长度可比，解码也没有错）。
 # 音频比画面短：用静音补到画面长度（不会把视频截短）；音频更长：照旧截到画面长度（-shortest）。
 # 色彩：默认与以往完全一致（保持 video.mjs 出的 yuvj420p 全范围 / bt470bg 标签）；LEMO_COLOR=bt709 改成标准 yuv420p 限幅 / bt709（画面色值差 ±3 以内，但会与旧片有细微色差）。
+# 编码器：默认 libx264（CPU）；LEMO_VENC=nvenc 改用 NVIDIA 显卡的 h264_nvenc（滤镜、颗粒、响度仍在 CPU 上）。
 die() { echo "mux.sh: $*" >&2; exit 1; }
 V="$1"; A="$2"; O="$3"; FPS="${4:-24}"; GR="${5:-2}"
 [ -n "$V" ] && [ -n "$A" ] && [ -n "$O" ] || die "usage: sh core/render/mux.sh video.mp4 mix.wav out.mp4 [fps=24] [grain=2]"
@@ -21,6 +22,11 @@ V="$1"; A="$2"; O="$3"; FPS="${4:-24}"; GR="${5:-2}"
 case "$FPS" in ''|*[!0-9.]*) die "fps must be a number, got '$FPS'";; esac
 case "$GR" in ''|*[!0-9.]*) die "grain must be a number (0 = none), got '$GR'";; esac
 case "${LEMO_COLOR:-}" in ''|bt709) ;; *) die "LEMO_COLOR must be bt709 or unset, got '$LEMO_COLOR'";; esac
+case "${LEMO_VENC:-}" in
+  '') VENC="-c:v libx264 -preset slow -crf 19";;
+  nvenc) VENC="-c:v h264_nvenc -preset p6 -tune hq -rc vbr -cq 19 -b:v 0";;
+  *) die "LEMO_VENC must be nvenc or unset, got '$LEMO_VENC'";;
+esac
 
 # 检查 WAV 头声明的音频长度有没有超出文件（截断在采样边界上的 WAV，ffmpeg 自己不会报任何错）。按字节逐个读长度，不依赖机器的字节序
 wav_truncated() {   # 返回 0 = 头里声明的比文件里有的多；占位长度（0 或 0xFFFFFFFF）视为"长度未知"，不算截断
@@ -83,10 +89,10 @@ if [ "${LEMO_COLOR:-}" = "bt709" ]; then
 else
   VF="$VF,format=yuv420p"; CARGS=""
 fi
-# shellcheck disable=SC2086  (CARGS 要按空格拆成多个参数；默认为空)
+# shellcheck disable=SC2086  (VENC、CARGS 要按空格拆成多个参数；CARGS 默认为空)
 ffmpeg -y -loglevel error -i "$V" -i "$A" \
   -filter_complex "[0:v]$VF[v];[1:a]$LN,aresample=48000$PAD[a]" \
-  -map "[v]" -map "[a]" -c:v libx264 -preset slow -crf 19 -r "$FPS" $CARGS -c:a aac -b:a 256k -movflags +faststart -shortest "$O" \
+  -map "[v]" -map "[a]" $VENC -r "$FPS" $CARGS -c:a aac -b:a 256k -movflags +faststart -shortest "$O" \
   || { rm -f "$O"; die "ffmpeg failed while writing '$O' (its message is above)"; }
 [ -s "$O" ] || { rm -f "$O"; die "no output was written to '$O'"; }
 echo "$O"

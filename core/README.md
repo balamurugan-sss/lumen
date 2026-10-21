@@ -74,6 +74,7 @@ All four page tools take `--size WxH` (default `1920x1080`, even numbers) and `-
 | `LEMO_ANGLE` | WebGL backend (default `metal` on macOS; `default` passes none) |
 | `RENDER_SLOTS` | optional; limits concurrent full renders across processes |
 | `LEMO_COLOR=bt709` | `mux.sh` writes limited-range BT.709 instead of the default full-range output |
+| `LEMO_VENC=nvenc` | `video.mjs` and `mux.sh` encode with NVIDIA's `h264_nvenc` instead of `libx264` (needs an NVIDIA GPU and an ffmpeg built with NVENC; same colour tags, slightly different pixels). Each `video.mjs` worker opens one NVENC session, and consumer GPUs allow about 8 at once |
 | `WHISPER_MODEL` | Whisper model name or local folder for `asr_check.py` (same as `--model`; default `base.en` for English, `base` otherwise; `small` is more accurate for Chinese) |
 | `HF_ENDPOINT` | Hugging Face mirror for the Whisper download |
 
