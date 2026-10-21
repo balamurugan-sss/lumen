@@ -4,12 +4,16 @@
 // 设了环境变量 RENDER_SLOTS（整数）时，整机最多同时这么多个整片渲染（slot.mjs）；不设就不限。分段文件放在 --out 旁边各自独有的隐藏目录，渲完（或失败、被中断）就删。
 // 同一个 demo 可以并行渲多个版本，但每个版本要有自己的 --out：两个渲染写同一个 --out 会直接报错，不会悄悄互相覆盖。
 // <out>.lock 记着占用者的 pid，占用者已不在、或锁文件超过 12 小时没被刷新（pid 被别的进程复用了），都算过期，新渲染接手。
+// 编码器：默认 libx264（CPU）；LEMO_VENC=nvenc 改用 NVIDIA 显卡的 h264_nvenc，色彩标签与 libx264 一致（yuvj420p 全范围），画面有细微差别。
 import fs from 'fs'; import path from 'path'; import { spawn, execFileSync } from 'child_process';
 import { openDemo, closeServer, requireDemo, takeSize } from './page.mjs';
 const args = process.argv.slice(2), { w: W, h: H } = takeSize(args), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
 const dir = args[0]; requireDemo(dir);
 const FPS = +opt('--fps', 24), WK = +opt('--workers', 3), Q = opt('--q', '');
 if (!(FPS > 0) || !Number.isInteger(WK) || WK < 1) { console.error('bad --fps / --workers: fps must be > 0, workers an integer ≥ 1'); process.exit(2); }
+const VENC = { '': ['-c:v', 'libx264', '-preset', 'medium', '-crf', '14'],
+  nvenc: ['-c:v', 'h264_nvenc', '-preset', 'p5', '-rc', 'vbr', '-cq', '14', '-b:v', '0'] }[process.env.LEMO_VENC || ''];
+if (!VENC) { console.error(`LEMO_VENC must be nvenc or unset, got '${process.env.LEMO_VENC}'`); process.exit(2); }
 const out = path.resolve(opt('--out', path.join(dir, 'out', 'video.mp4')));
 const outDir = path.dirname(out), base = path.basename(out, path.extname(out));
 fs.mkdirSync(outDir, { recursive: true });
@@ -46,7 +50,7 @@ try { await Promise.all([...Array(WK)].map(async (_, w) => {
   const { browser, page } = await openDemo(dir, { w: W, h: H, q: Q });
   // cwd 设在分段目录、用相对文件名：路径里有 # ? 之类的字符时 ffmpeg 才不会把它当协议语法
   const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-',
-    '-c:v', 'libx264', '-preset', 'medium', '-crf', '14', '-pix_fmt', 'yuv420p', `seg_${w}.mp4`], { cwd: segDir, stdio: ['pipe', 'inherit', 'inherit'] });
+    ...VENC, '-pix_fmt', 'yuv420p', `seg_${w}.mp4`], { cwd: segDir, stdio: ['pipe', 'inherit', 'inherit'] });
   procs.add(ff); ff.on('close', () => procs.delete(ff));
   let dead = null;   // ffmpeg 提前退出（缺编码器、磁盘满…）：它自己的报错已打到 stderr，这里只记一笔并停止喂帧
   let done; const closed = new Promise(r => { done = r; }); ff.on('close', code => done(code));
