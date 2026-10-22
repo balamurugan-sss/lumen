@@ -174,15 +174,21 @@ The proven upgrade path for prettier films with these same tools:
   snapshot instead of re-rolling from zero.
 - Worked example: `films/snow-white/hybrid-test/` (kept locally) — a
   10 s coffin-on-the-hill shot, generated hill + the film's own dwarfs.
-- Generated *characters* — TESTED 2026-10-22: one character sheet per
-  character from a **single generation** works. One call produced a
-  1920×1280 sheet (5 full-body poses + 4 expression close-ups) with
-  face, hairstyle and costume identical across all 9 depictions;
-  cut out the poses and puppet-animate them by code. Known minor
-  flaws: a pose labelled "three-quarter" came out near-frontal, and
-  layered garments can blend in a sitting pose — inspect each pose
-  before cutting it out. Per-scene stills still drift; don't use them
-  for a recurring character.
+- Generated *characters* — TESTED + PRODUCED 2026-10-22: one character
+  sheet per character from a **single generation** works. One call
+  produced a 1920×1280 sheet (5 full-body poses + 4 expression
+  close-ups) with face, hairstyle and costume identical across all 9
+  depictions. Cutout method that works: flood-fill the sheet's
+  background colour from the image borders (tolerance ≈ 90 summed
+  RGB distance) — enclosed light garments (a white apron) survive
+  because the ink outline seals them. A 20 s puppet film was produced
+  from the cutouts over a generated backdrop (walk-in with a step bob,
+  crossfade to a standing pose, expression close-up) and reads as one
+  consistent character throughout. Known minor flaws: a pose labelled
+  "three-quarter" came out near-frontal, and layered garments can
+  blend in a sitting pose — inspect each pose before cutting it out.
+  Per-scene stills still drift; don't use them for a recurring
+  character.
 
 ## Muse video generation — NOT AVAILABLE on this account
 
