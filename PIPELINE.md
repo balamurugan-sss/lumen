@@ -190,6 +190,49 @@ The proven upgrade path for prettier films with these same tools:
   Per-scene stills still drift; don't use them for a recurring
   character.
 
+## Repo-explainer slidecast (vertical) — PRODUCED 2026-10-22
+
+The narrated tech-news format (a GitHub repo explained in ~9 named
+sections, 1080×1920, ~2 min) is fully producible here; one film
+(`films/rea-explainer/`, local) proves it. Recipe:
+
+- Facts first, as always: clone the repo, count what the film will
+  claim (files, LOC, README table rows), use the GitHub API for
+  stars/forks, and label every visual with its source in-frame
+  ("NGUỒN: README", "GITHUB API — <date>", "HÌNH MINH HỌA"). If a
+  number has no canonical source (REA's MCP tool count), the film
+  does not state one.
+- Voice: **Muse TTS reads Vietnamese well** — verified by an ASR
+  round-trip (Whisper heard the test sentence back near-verbatim).
+  Use `/opt/hatch/bin/tts speak --language vi` per script line;
+  write brand names as they should sound ("REA" → "Ria"). Record
+  per line, build the timeline from the measured durations.
+- Karaoke subtitles: ASR the recorded narration with word
+  timestamps, then map the *script* words onto ASR timings by index
+  interpolation (counts differ slightly; s8 was 29 script vs 28 ASR
+  words and still tracked). In this venv, faster-whisper's own audio
+  decode crashes against the installed PyAV — load the wav with
+  soundfile and pass a numpy array instead.
+- Portrait rendering: the render tools default to 1920×1080 —
+  pass `--size 1080x1920` (still.mjs takes it natively; the project
+  copy of the driver parses and forwards it). Flat dark graphics
+  render at ~8 fps, far faster than painted scenes.
+- Voice-track assembly: name every silence file uniquely — the
+  concat demuxer resolves filenames at mux time, so reusing one
+  `_sil.wav` makes every gap the length of the last write (cost:
+  a 0.3 s drift, caught by a duration check).
+- Canvas pitfall: when scaling an element around its centre, the
+  counter-translate must undo the *full* translation
+  (`translate(cx,cy); scale(s); draw at -w/2,-h/2`). A partial undo
+  doubles the element's coordinates (chips landed on the caption).
+- Loudness: Muse TTS peaks are hot for its loudness (~ −22 LUFS at
+  −4.6 TP), so two-pass loudnorm lands near −14.5; trim the last
+  fraction with a measured `volume=` step and re-verify the
+  delivered file (final: −14.0 LUFS, peak −0.5 dBFS).
+- The driver's end-of-run assembly truncated the mp4's moov atom
+  again on this film — the standing fix (reassemble from the frame
+  JPEGs) worked; treat the frames, never the assembly, as truth.
+
 ## Muse video generation — NOT AVAILABLE on this account
 
 - Tested 2026-10-22: `media.generate_video` returns a hard 403 —
