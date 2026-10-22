@@ -1,0 +1,152 @@
+[
+ {
+  "en": "Once upon a time, in the middle of winter, a queen sat sewing by an ebony window.",
+  "id": "n01",
+  "scene": "wish",
+  "vi": "Ngày xửa ngày xưa, giữa mùa đông, một hoàng hậu ngồi may bên khung cửa sổ bằng gỗ mun đen."
+ },
+ {
+  "en": "Snow fell like feathers. She pricked her finger, and three drops of blood fell on the snow.",
+  "id": "n02",
+  "scene": "wish",
+  "vi": "Tuyết rơi như lông chim từ trời. Kim đâm vào ngón tay bà, và ba giọt máu rơi xuống nền tuyết."
+ },
+ {
+  "en": "\"If only I had a child,\" she said, \"white as snow, red as blood, and black as ebony.\"",
+  "id": "n03",
+  "scene": "wish",
+  "vi": "\"Ước gì ta có một đứa con,\" bà nói, \"da trắng như tuyết, môi đỏ như máu, tóc đen như gỗ mun.\""
+ },
+ {
+  "en": "Her wish came true. But when the girl was born, the queen died, and the king took a new wife.",
+  "id": "n04",
+  "scene": "wish",
+  "vi": "Điều ước thành sự thật. Nhưng khi bé gái chào đời, hoàng hậu qua đời, và nhà vua cưới một hoàng hậu mới."
+ },
+ {
+  "en": "The new queen was beautiful, and proud. Each morning she asked her magic mirror:",
+  "id": "n05",
+  "scene": "mirror",
+  "vi": "Hoàng hậu mới xinh đẹp, và kiêu ngạo. Mỗi sáng, bà đứng trước chiếc gương thần và hỏi:"
+ },
+ {
+  "en": "\"Mirror, mirror on the wall, who is the fairest of them all?\" And for years, the mirror answered: \"You are.\"",
+  "id": "n06",
+  "scene": "mirror",
+  "vi": "\"Gương kia ngự ở trên tường, ai là người đẹp nhất trần gian?\" Và suốt nhiều năm, gương đáp: \"Chính là người.\""
+ },
+ {
+  "en": "But Snow White grew, and by seven she was as beautiful as the day itself. One morning the mirror answered: \"You are fair, Queen. But Snow White is fairer still.\"",
+  "id": "n07",
+  "scene": "mirror",
+  "vi": "Nhưng Bạch Tuyết lớn lên, mới bảy tuổi đã đẹp như ban ngày. Một buổi sáng, gương đáp: \"Hoàng hậu đẹp thật. Nhưng Bạch Tuyết còn đẹp hơn.\""
+ },
+ {
+  "en": "The queen's heart filled with envy. She ordered her huntsman to take the child deep into the forest, and not bring her back.",
+  "id": "n08",
+  "scene": "huntsman",
+  "vi": "Lòng hoàng hậu tràn đầy ghen tị. Bà gọi thợ săn tới, ra lệnh đưa đứa trẻ vào rừng sâu, và không được đưa nó trở về."
+ },
+ {
+  "en": "But as he raised his knife, Snow White begged for her life, and his heart would not let him strike. \"Run, child,\" he said. \"Run, and never come back.\"",
+  "id": "n09",
+  "scene": "huntsman",
+  "vi": "Nhưng khi thợ săn giơ dao lên, Bạch Tuyết van xin được sống, và trái tim ông không nỡ ra tay. \"Chạy đi, con,\" ông nói. \"Chạy đi, và đừng bao giờ quay lại.\""
+ },
+ {
+  "en": "He brought the queen a boar's heart instead. Snow White ran over stones and through thorns until the light faded.",
+  "id": "n10",
+  "scene": "huntsman",
+  "vi": "Ông mang về cho hoàng hậu một quả tim heo rừng thay thế. Còn Bạch Tuyết chạy, qua đá nhọn và bụi gai, cho tới khi ánh sáng dần tắt."
+ },
+ {
+  "en": "In the dark she found a tiny house. Inside, all was small and neat: seven little plates, seven little cups, seven little beds.",
+  "id": "n11",
+  "scene": "cottage",
+  "vi": "Trong bóng tối, nàng đến một ngôi nhà nhỏ xíu. Mọi thứ bên trong đều nhỏ nhắn, gọn gàng: bảy chiếc đĩa nhỏ, bảy chiếc cốc nhỏ, và bảy chiếc giường nhỏ xếp thành một hàng."
+ },
+ {
+  "en": "Hungry and weary, she tasted from each plate, lay down in the seventh bed, and slept.",
+  "id": "n12",
+  "scene": "cottage",
+  "vi": "Đói và mệt, nàng nếm một chút ở mỗi đĩa, rồi nằm xuống chiếc giường thứ bảy, và ngủ thiếp đi."
+ },
+ {
+  "en": "At nightfall the owners came home: seven dwarfs who dug for ore in the mountains. They found her asleep, and marvelled at her beauty.",
+  "id": "n13",
+  "scene": "dwarfs",
+  "vi": "Khi màn đêm buông xuống, các chủ nhà trở về: bảy chú lùn đào quặng trong núi. Họ thấy nàng đang ngủ, và ngẩn ngơ trước vẻ đẹp của nàng."
+ },
+ {
+  "en": "In the morning she told them everything. \"Stay with us,\" they said. \"Keep our house. And beware the queen: let no one in.\"",
+  "id": "n14",
+  "scene": "dwarfs",
+  "vi": "Sáng hôm sau, nàng kể lại mọi chuyện. \"Ở lại với chúng tôi,\" họ nói. \"Trông nhà cho chúng tôi. Và hãy cảnh giác hoàng hậu. Đừng cho ai vào nhà.\""
+ },
+ {
+  "en": "But the mirror told the queen Snow White still lived, beyond the seven hills. So the queen disguised herself, and knocked at the cottage door.",
+  "id": "n15",
+  "scene": "visits",
+  "vi": "Nhưng gương thần báo cho hoàng hậu biết Bạch Tuyết vẫn còn sống, ở sau bảy ngọn đồi. Thế là hoàng hậu cải trang, đến gõ cửa ngôi nhà nhỏ."
+ },
+ {
+  "en": "First, laces, pulled so tight that Snow White fell as if dead. The dwarfs came home in time, and cut them free.",
+  "id": "n16",
+  "scene": "visits",
+  "vi": "Lần đầu, bà bán cho nàng dây thắt lưng, rồi siết chặt đến mức Bạch Tuyết ngã xuống như đã chết. Các chú lùn kịp trở về, và cắt đứt dây."
+ },
+ {
+  "en": "Then came a poisoned comb. One touch of its teeth, and she fell again. Once more, the dwarfs saved her.",
+  "id": "n17",
+  "scene": "visits",
+  "vi": "Rồi bà trở lại với một chiếc lược độc. Chỉ một lần chạm vào răng lược, nàng lại ngã xuống. Và một lần nữa, các chú lùn cứu được nàng."
+ },
+ {
+  "en": "Then the queen made her finest poison: an apple half white, half red, so lovely that anyone who saw it longed for a taste.",
+  "id": "n18",
+  "scene": "apple",
+  "vi": "Rồi hoàng hậu tạo ra thứ thuốc độc tinh vi nhất: một quả táo, nửa trắng nửa đỏ, đẹp đến mức ai nhìn thấy cũng muốn nếm thử."
+ },
+ {
+  "en": "\"See? I eat it myself,\" said the queen, and ate the white half. Snow White bit the red, and fell.",
+  "id": "n19",
+  "scene": "apple",
+  "vi": "\"Thấy chưa? Ta ăn đây này,\" hoàng hậu nói, và ăn nửa trắng. Bạch Tuyết cắn một miếng nửa đỏ, và ngã xuống đất."
+ },
+ {
+  "en": "This time nothing could wake her. The dwarfs laid her in a glass coffin so all could see her beauty, and kept watch on the hill.",
+  "id": "n20",
+  "scene": "coffin",
+  "vi": "Lần này, không gì có thể đánh thức nàng. Các chú lùn đặt nàng vào quan tài pha lê, để mọi người đều thấy vẻ đẹp của nàng, và thay phiên canh gác trên đồi."
+ },
+ {
+  "en": "One day a prince rode by. He saw the coffin, read its golden letters, and begged the dwarfs: \"Let me take her with me. I cannot live without seeing her.\"",
+  "id": "n22",
+  "scene": "prince",
+  "vi": "Một ngày nọ, một hoàng tử cưỡi ngựa đi qua. Chàng thấy quan tài, đọc những dòng chữ vàng trên đó, và khẩn cầu các chú lùn: \"Hãy để ta đưa nàng theo. Ta không thể sống mà không được nhìn thấy nàng.\""
+ },
+ {
+  "en": "His servants lifted the coffin, and stumbled on a root. The jolt shook the piece of poisoned apple loose from her throat.",
+  "id": "n23",
+  "scene": "prince",
+  "vi": "Các người hầu khiêng quan tài lên, và vấp phải một rễ cây. Cú xóc làm miếng táo độc bật ra khỏi cổ họng của Bạch Tuyết."
+ },
+ {
+  "en": "She opened her eyes, lifted the lid, and sat up. \"Where am I?\" she cried. \"You are with me,\" said the prince.",
+  "id": "n24",
+  "scene": "prince",
+  "vi": "Nàng mở mắt, nhấc nắp quan tài, và ngồi dậy. \"Ta đang ở đâu?\" nàng kêu lên. Hoàng tử đáp: \"Nàng đang ở bên ta.\""
+ },
+ {
+  "en": "They were married with great joy. But far away the queen asked her mirror one last question. At the answer she fled into the night, and behind her the mirror cracked.",
+  "id": "n25",
+  "scene": "wedding",
+  "vi": "Họ làm đám cưới, tiệc mừng linh đình trong niềm vui lớn. Nhưng ở nơi xa, hoàng hậu hỏi chiếc gương lần cuối. Nghe xong câu trả lời, bà bỏ trốn vào đêm tối, và chiếc gương nứt vỡ sau lưng bà."
+ },
+ {
+  "en": "And Snow White lived happily for many years: white as snow, red as blood, kind as the day she was born.",
+  "id": "n26",
+  "scene": "ending",
+  "vi": "Và Bạch Tuyết sống hạnh phúc nhiều năm: trắng như tuyết, đỏ như máu, và hiền lành như ngày nàng chào đời."
+ }
+]

@@ -1,0 +1,6 @@
+@font-face { font-family: 'Dela Gothic One'; src: url(DelaGothicOne-Regular.ttf) format('truetype'); font-display: block; }
+@font-face { font-family: 'Kanit'; font-style: italic; font-weight: 800; src: url(Kanit-BlackItalic-800.woff2) format('woff2'); font-display: block; }
+@font-face { font-family: 'Kanit'; font-style: italic; font-weight: 900; src: url(Kanit-BlackItalic-900.woff2) format('woff2'); font-display: block; }
+@font-face { font-family: 'Barlow SC'; font-weight: 500; src: url(barlow-semi-condensed-v16-latin_latin-ext_vietnamese-500.woff2) format('woff2'); font-display: block; }
+@font-face { font-family: 'Barlow SC'; font-weight: 600; src: url(barlow-semi-condensed-v16-latin_latin-ext_vietnamese-600.woff2) format('woff2'); font-display: block; }
+@font-face { font-family: 'Barlow SC'; font-weight: 700; src: url(barlow-semi-condensed-v16-latin_latin-ext_vietnamese-700.woff2) format('woff2'); font-display: block; }
