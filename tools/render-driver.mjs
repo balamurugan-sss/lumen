@@ -1,16 +1,17 @@
-// Project-local frame renderer for SNOW WHITE.
+// Resumable frame renderer for films — see PIPELINE.md §6.
+// Copy this file into films/<slug>/tools/ and change the import
+// below back to '../../../core/render/page.mjs'.
 //
-// Why not core/render/video.mjs: on this VM (SwiftShader, shared
-// with the owner's other work) a frame occasionally exceeds
-// video.mjs's fixed 30 s screenshot timeout and the render dies.
-// This driver keeps the same page contract and output, but
-// screenshots with a 240 s timeout, retries a frame up to 3
-// times, and writes every frame to out/frames/ so a killed
-// render resumes where it stopped.
+// Why not core/render/video.mjs: on a CPU/SwiftShader machine a
+// frame occasionally exceeds video.mjs's fixed 30 s screenshot
+// timeout and the whole render dies. This driver keeps the same
+// page contract and output, but screenshots with a 240 s timeout,
+// retries a frame up to 3 times, and writes every frame to
+// out/frames/ so a killed render resumes where it stopped.
 //
-// usage: node tools/render.mjs <projectDir> [--fps 24] [--q 'ss=1']
+// usage: node render-driver.mjs <projectDir> [--fps 24] [--q 'ss=1']
 import fs from 'fs'; import path from 'path'; import { spawnSync } from 'child_process';
-import { openDemo, closeServer, requireDemo } from '../../../core/render/page.mjs';
+import { openDemo, closeServer, requireDemo } from '../core/render/page.mjs';
 
 const args = process.argv.slice(2);
 const dir = args[0]; requireDemo(dir);

@@ -82,14 +82,7 @@ styles/*/demo/stills/*
 !styles/*/demo/stills/engine*.jpg
 
 # 用户自己的片子（agent 输出）
-# Fork (thoitiettxl-cyber): films ARE the work product here — track
-# sources, data, docs and final deliverables; ignore only what
-# build.sh can regenerate.
-/films/**/out/
-/films/**/stills/
-/films/**/check/
-/films/**/*.log
-/films/**/voice_fix*/
+/films/
 
 
 # Production logs are internal: they stay local
