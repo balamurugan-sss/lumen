@@ -38,18 +38,21 @@ wav_truncated() {   # returns 0 = the header declares more than the file holds; 
   return 1
 }
 
-# first pass: measure loudness
+# first pass: measure loudness. Decoded length is read from a separate pass with no
+# audio filter: ffmpeg 6.1 reports the last -progress out_time of a loudnorm pass about
+# 2.9 s short of the real length (fixed lookahead), so a short intact file looks truncated.
 [ -n "$(ffprobe -v error -select_streams a:0 -show_entries stream=codec_type -of csv=p=0 "$A" 2>/dev/null)" ] || die "no audio stream in '$A' (is it really the mixed audio file?)"
+P=$(ffmpeg -hide_banner -nostats -progress pipe:2 -i "$A" -f null - 2>&1) || die "ffmpeg cannot read the audio '$A': $(echo "$P" | tail -2)"
 M=$(ffmpeg -hide_banner -nostats -progress pipe:2 -i "$A" -af loudnorm=I=-14:TP=-1.2:LRA=11:print_format=json -f null - 2>&1) || die "ffmpeg cannot read the audio '$A': $(echo "$M" | tail -2)"
 wav_truncated "$A" && die "the WAV file '$A' is cut off: its header promises more audio than the file contains (was the write interrupted?)"
-# decoder/demuxer log lines all start with [name @ 0x…]; any with error wording, except the three fixed streamed-WAV notices below, mean the file is damaged (loudness would be -inf, but that isn't "silence")
-ERRS=$(echo "$M" | grep -E '^\[' | grep -iE 'error|invalid|corrupt|header missing|overread|truncat|incomplete')
+# decoder/demuxer log lines all start with [name @ 0x…]; any with error wording, except the three fixed streamed-WAV notices below, mean the file is damaged (loudness would be -inf, but that isn't "silence"). Read them from both passes: a decode error can show up on either.
+ERRS=$(printf '%s\n%s\n' "$P" "$M" | grep -E '^\[' | grep -iE 'error|invalid|corrupt|header missing|overread|truncat|incomplete')
 BENIGN='Ignoring maximum wav data size|Packet corrupt \(stream = [0-9]+, dts = NOPTS\)|corrupt input packet in stream [0-9]+'
 BAD=$(echo "$ERRS" | grep -vE "$BENIGN" | head -2)
 [ -z "$BAD" ] || die "the audio '$A' is damaged; ffmpeg reported while decoding it:
 $BAD"
-# seconds actually decoded (the last out_time from -progress) versus what the container claims; when the container duration is one ffmpeg "estimated from the bitrate" it's unreliable, so don't compare
-DEC=$(echo "$M" | grep '^out_time=' | tail -1 | cut -d= -f2 | awk '{ if ($0 ~ /^-/ || $0 !~ /:/) print 0; else { split($0, p, ":"); print p[1] * 3600 + p[2] * 60 + p[3] } }')
+# seconds actually decoded (last out_time of the filter-free pass) versus what the container claims; when the container duration is one ffmpeg "estimated from the bitrate" it's unreliable, so don't compare
+DEC=$(echo "$P" | grep '^out_time=' | tail -1 | cut -d= -f2 | awk '{ if ($0 ~ /^-/ || $0 !~ /:/) print 0; else { split($0, p, ":"); print p[1] * 3600 + p[2] * 60 + p[3] } }')
 CONT=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$A" 2>/dev/null | head -1)
 if ! echo "$M" | grep -q 'Estimating duration from bitrate' && awk -v d="${DEC:-0}" -v c="${CONT:-0}" 'BEGIN { tol = c * 0.05 > 0.15 ? c * 0.05 : 0.15; exit !(c + 0 > 0 && c - d > tol) }'; then
   die "only ${DEC:-0} s of the ${CONT} s that '$A' claims could be decoded: the file is damaged or cut off"
