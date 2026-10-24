@@ -1,12 +1,13 @@
 """Whisper line-by-line check: python core/tts/asr_check.py lines.json voices_dir [--lang en|zh|auto] [--model base|small|…] [--threshold 0.92]
 Compares each line's text with its transcription (0.6 s of silence is padded on both sides first; short lines are misheard without it) and
 writes per-word timestamps to voices_dir/words.json (for lip sync and line breaks).
-A line in lines.json may carry an "asr" field that overrides the expected text (proper names, onomatopoeia, how numbers are read, e.g. "三十八" rather than "38").
+A line in lines.json may carry an "asr" field that overrides the expected text (proper names, onomatopoeia, numbers the comparison does not convert, e.g. "3.5" for 三点五).
 --lang  auto (default) decides by whether the text contains CJK characters. en requires an exact word-by-word match after dropping punctuation
         and case (whole numbers 0–999 are turned into words on both sides, so "forty" and "40" match; larger numbers, years, ordinals like 3rd and
         numbers with punctuation (3.5, 1:30, 1,000, 40%) are not, so write the expected transcription in the "asr" field). zh (also ja / ko) compares
-        characters: after dropping punctuation, folding full-width to half-width and turning Chinese numerals into digits, a difflib similarity
-        ≥ --threshold (default 0.92) passes.
+        characters: after dropping punctuation, folding full-width to half-width and turning Chinese numerals into the digits Whisper writes
+        (十九 → 19, 一千三百 → 1300, 六百万 → 600万; a digit-by-digit reading such as 一九四九 stays 1949), a difflib similarity ≥ --threshold
+        (default 0.92) passes. Decimals, percentages and fractions are not converted (三点五 vs 3.5).
 Model: --model (or the WHISPER_MODEL environment variable; a model name, or a local folder for offline use); default en → base.en, zh → small (base mishears too many Chinese lines), other languages → base (multilingual).
       If the default mishears a line that sounds right to you, check again with a larger model (base → small, about 480 MB; small → medium), more accurate and several times slower.
       The first run downloads from Hugging Face (base / base.en ≈ 145 MB, small ≈ 480 MB); behind a firewall set HF_ENDPOINT=https://hf-mirror.com,
@@ -18,6 +19,7 @@ import sys, json, re, os, argparse, difflib, unicodedata
 CJK = re.compile('[㐀-鿿豈-﫿぀-ヿ가-힯]')
 CHAR_LANGS = {'zh', 'ja', 'ko'}           # these languages are compared by character, the rest by word
 _DIGITS = str.maketrans('零〇一二三四五六七八九', '00123456789')
+_UNIT = {'十': 10, '百': 100, '千': 1000}
 
 
 _ONES = 'zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen'.split()
@@ -57,9 +59,54 @@ def norm_en(s):
     return out
 
 
+def _section(t):   # 0..9999 from digits and 十百千; None unless t is a well-formed number
+    if not t or re.search('[^0-9十百千]', t): return None
+    if not re.search('[十百千]', t): return int(t) if len(t) <= 4 and (len(t) == 1 or t[0] != '0') else None
+    v, prev, last, zero, i = 0, 10000, None, False, 0
+    while i < len(t):
+        c, n = t[i], t[i + 1:i + 2]
+        if c == '0':
+            if i == 0 or t[i - 1] == '0' or not n: return None   # leading, doubled or trailing zero
+            zero = True
+        elif c in '百千': return None   # no coefficient (百姓, 千年)
+        else:
+            if c == '十': d, u = 1, 10
+            elif n in _UNIT: d, u = int(c), _UNIT[n]; i += 1
+            elif not n: v += int(c) * (last // 10 if not zero and last in (100, 1000) else 1); break   # 三百五 = 350
+            else: return None
+            if u >= prev: return None
+            v += d * u; prev = last = u; zero = False
+        i += 1
+    return v
+
+
+def _value(r):   # value of a run like 一千三百 or 六百万; None if it is not a complete number (万一, 千万别)
+    total = 0
+    for ch, mult in (('亿', 10**8), ('万', 10**4)):
+        if ch not in r: continue
+        hi, r = r.split(ch, 1); c = _section(hi)
+        if not c: return None
+        total += c * mult
+        if r[:1] == '0':
+            r = r[1:]
+            if not r: return None
+        elif len(r) == 1 and r in '123456789': return total + int(r) * (mult // 10)   # 一万五 = 15000
+    s = _section(r) if r else 0
+    return None if s is None else total + s
+
+
+def _num(m):   # a run with 十百千万亿 → the number as Whisper writes it (十九 → 19, 六百万 → 600万, 三亿 → 3亿); other runs (一九四九) stay
+    v = _value(m.group()) if re.search('[十百千万亿]', m.group()) else None
+    if v is None: return m.group()
+    if v >= 10**8 and v % 10**8 == 0: return f'{v // 10**8}亿'
+    if v >= 10**4 and v % 10**4 == 0: return f'{v // 10**4}万'
+    return str(v)
+
+
 def norm_zh(s):
     s = unicodedata.normalize('NFKC', s).lower().translate(_DIGITS)   # NFKC: full-width → half-width, compatibility forms normalised
-    return ''.join(c for c in s if unicodedata.category(c)[0] in 'LN')   # keep only letters/hanzi/digits; strip all punctuation and whitespace
+    s = ''.join(c for c in s if unicodedata.category(c)[0] in 'LN')   # keep only letters/hanzi/digits; strip all punctuation and whitespace
+    return re.sub('[0-9十百千万亿]+', _num, re.sub('两(?=[百千万亿])', '2', s))   # then numbers, after punctuation is gone, so strings that matched before still match
 
 
 def detect_lang(texts):
